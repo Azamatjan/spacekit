@@ -7,9 +7,9 @@ import type { Simulation } from './Simulation';
 import type { SpaceObjectOptions } from './SpaceObject';
 
 export class ShapeObject extends RotatingObject {
-  private shapeObj: THREE.Object3D | undefined;
+  private shapeObj: THREE.GLTFLoader | undefined;
 
-  private loadingPromise: Promise<THREE.Object3D>;
+  private loadingPromise: Promise<THREE.GLTFLoader>;
 
   /**
    * @param {Object} options.shape Shape specification
@@ -41,7 +41,7 @@ export class ShapeObject extends RotatingObject {
     manager.onProgress = (item: string, loaded: number, total: number) => {
       console.info(this._id, item, 'loading progress:', loaded, '/', total);
     };
-    this.loadingPromise = new Promise<THREE.Object3D>((resolve) => {
+    this.loadingPromise = new Promise<THREE.GLTFLoader>((resolve) => {
       const loader = new GLTFLoader(manager);
       // TODO(ian): Make shapeurl follow assetpath logic.
       loader.load(options.shape!.shapeUrl!, (object) => {
@@ -80,9 +80,9 @@ export class ShapeObject extends RotatingObject {
 
   /**
    * Specifies the object that is used to compute the bounding box.
-   * @return {THREE.Object3D} THREE.js object
+   * @return {THREE.GLTFLoader} THREE.js object
    */
-  override async getBoundingObject(): Promise<THREE.Object3D> {
+  override async getBoundingObject(): Promise<THREE.GLTFLoader> {
     return this.loadingPromise;
   }
 }
