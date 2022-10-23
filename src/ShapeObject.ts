@@ -7,9 +7,9 @@ import type { Simulation } from './Simulation';
 import type { SpaceObjectOptions } from './SpaceObject';
 
 export class ShapeObject extends RotatingObject {
-  private shapeObj: THREE.GLTFLoader | undefined;
+  private shapeObj: THREE.Object3D | undefined;
 
-  private loadingPromise: Promise<THREE.GLTFLoader>;
+  private loadingPromise: Promise<THREE.Object3D>;
 
   /**
    * @param {Object} options.shape Shape specification
@@ -41,25 +41,25 @@ export class ShapeObject extends RotatingObject {
     manager.onProgress = (item: string, loaded: number, total: number) => {
       console.info(this._id, item, 'loading progress:', loaded, '/', total);
     };
-    this.loadingPromise = new Promise<THREE.GLTFLoader>((resolve) => {
+    this.loadingPromise = new Promise<THREE.Object3D>((resolve) => {
       const loader = new GLTFLoader(manager);
       // TODO(ian): Make shapeurl follow assetpath logic.
       loader.load(options.shape!.shapeUrl!, (object) => {
-        // object.traverse((child) => {
-        //   if (child instanceof THREE.Mesh) {
-        //     const material = new THREE.MeshStandardMaterial({
-        //       color: this._options.shape!.color || 0xcccccc,
-        //     });
-        //     child.material = material;
-        //     child.geometry.scale(0.05, 0.05, 0.05);
-        //     /*
-        //     child.geometry.computeFaceNormals();
-        //     child.geometry.computeVertexNormals();
-        //     child.geometry.computeBoundingBox();
-        //    */
-        //     this._materials.push(material);
-        //   }
-        // });
+        object.traverse((child) => {
+          if (child instanceof THREE.Mesh) {
+            const material = new THREE.MeshStandardMaterial({
+              color: this._options.shape!.color || 0xcccccc,
+            });
+            child.material = material;
+            child.geometry.scale(0.05, 0.05, 0.05);
+            /*
+            child.geometry.computeFaceNormals();
+            child.geometry.computeVertexNormals();
+            child.geometry.computeBoundingBox();
+           */
+            this._materials.push(material);
+          }
+        });
 
         this.shapeObj = object;
         this._obj.add(object);
@@ -80,9 +80,9 @@ export class ShapeObject extends RotatingObject {
 
   /**
    * Specifies the object that is used to compute the bounding box.
-   * @return {THREE.GLTFLoader} THREE.js object
+   * @return {THREE.Object3D} THREE.js object
    */
-  override async getBoundingObject(): Promise<THREE.GLTFLoader> {
+  override async getBoundingObject(): Promise<THREE.Object3D> {
     return this.loadingPromise;
   }
 }
