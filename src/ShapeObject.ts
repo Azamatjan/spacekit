@@ -45,24 +45,24 @@ export class ShapeObject extends RotatingObject {
       const loader = new GLTFLoader(manager);
       // TODO(ian): Make shapeurl follow assetpath logic.
       loader.load(options.shape!.shapeUrl!, (object) => {
-        object.traverse((child) => {
-          if (child instanceof THREE.Mesh) {
-            const material = new THREE.MeshStandardMaterial({
-              color: this._options.shape!.color || 0xcccccc,
-            });
-            child.material = material;
-            child.geometry.scale(0.05, 0.05, 0.05);
-            /*
-            child.geometry.computeFaceNormals();
-            child.geometry.computeVertexNormals();
-            child.geometry.computeBoundingBox();
-           */
-            this._materials.push(material);
-          }
-        });
+        // object.traverse((child) => {
+        //   if (child instanceof THREE.Mesh) {
+        //     const material = new THREE.MeshStandardMaterial({
+        //       color: this._options.shape!.color || 0xcccccc,
+        //     });
+        //     child.material = material;
+        //     child.geometry.scale(0.05, 0.05, 0.05);
+        //     /*
+        //     child.geometry.computeFaceNormals();
+        //     child.geometry.computeVertexNormals();
+        //     child.geometry.computeBoundingBox();
+        //    */
+        //     this._materials.push(material);
+        //   }
+        // });
 
-        this.shapeObj = object;
-        this._obj.add(object);
+        this.shapeObj = object.scene;
+        this._obj.add(object.scene);
 
         if (this._simulation) {
           // Add it all to visualization.

@@ -16,11 +16,7 @@ var __extends = (this && this.__extends) || (function () {
 })();
 var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
 }) : (function(o, m, k, k2) {
     if (k2 === undefined) k2 = k;
     o[k2] = m[k];
@@ -76,7 +72,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 exports.__esModule = true;
 exports.ShapeObject = void 0;
 var THREE = __importStar(require("three"));
-var OBJLoader_1 = require("three/examples/jsm/loaders/OBJLoader");
+var GLTFLoader_1 = require("three/examples/jsm/loaders/GLTFLoader");
 var RotatingObject_1 = require("./RotatingObject");
 var ShapeObject = /** @class */ (function (_super) {
     __extends(ShapeObject, _super);
@@ -94,9 +90,8 @@ var ShapeObject = /** @class */ (function (_super) {
      * @see RotatingObject
      */
     function ShapeObject(id, options, simulation) {
-        var _this = this;
         var _a;
-        _this = _super.call(this, id, options, simulation, false /* autoInit */) || this;
+        var _this = _super.call(this, id, options, simulation, false /* autoInit */) || this;
         if (!options.shape) {
             throw new Error('ShapeObject requires an options.shape object');
         }
@@ -109,26 +104,26 @@ var ShapeObject = /** @class */ (function (_super) {
             console.info(_this._id, item, 'loading progress:', loaded, '/', total);
         };
         _this.loadingPromise = new Promise(function (resolve) {
-            var loader = new OBJLoader_1.OBJLoader(manager);
+            var loader = new GLTFLoader_1.GLTFLoader(manager);
             // TODO(ian): Make shapeurl follow assetpath logic.
             loader.load(options.shape.shapeUrl, function (object) {
-                object.traverse(function (child) {
-                    if (child instanceof THREE.Mesh) {
-                        var material = new THREE.MeshStandardMaterial({
-                            color: _this._options.shape.color || 0xcccccc
-                        });
-                        child.material = material;
-                        child.geometry.scale(0.05, 0.05, 0.05);
-                        /*
-                        child.geometry.computeFaceNormals();
-                        child.geometry.computeVertexNormals();
-                        child.geometry.computeBoundingBox();
-                       */
-                        _this._materials.push(material);
-                    }
-                });
-                _this.shapeObj = object;
-                _this._obj.add(object);
+                // object.traverse((child) => {
+                //   if (child instanceof THREE.Mesh) {
+                //     const material = new THREE.MeshStandardMaterial({
+                //       color: this._options.shape!.color || 0xcccccc,
+                //     });
+                //     child.material = material;
+                //     child.geometry.scale(0.05, 0.05, 0.05);
+                //     /*
+                //     child.geometry.computeFaceNormals();
+                //     child.geometry.computeVertexNormals();
+                //     child.geometry.computeBoundingBox();
+                //    */
+                //     this._materials.push(material);
+                //   }
+                // });
+                _this.shapeObj = object.scene;
+                _this._obj.add(object.scene);
                 if (_this._simulation) {
                     // Add it all to visualization.
                     _this._simulation.addObject(_this, false /* noUpdate */);
