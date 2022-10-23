@@ -1,3 +1,3 @@
 #!/bin/bash
 
-python test_server.py 8001
+python3 test_server.py 8001
